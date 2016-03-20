@@ -17,18 +17,8 @@
 #'     data_store(dialogue, paste(person, time, sep = "_"))
 #' )
 #'
-# kmeans_cluster(x) %>%
-#     plot(h=.7, lwd=2)
-#
-# kmeans_cluster(x) %>%
-#     assign_cluster(h=.7)
-#
-# kmeans_cluster(x, method="complete") %>%
-#     plot(k=6)
-#
-# kmeans_cluster(x) %>%
-#     assign_cluster(k=6)
-#
+# kmeans_cluster(x, k=6) %>%
+#     assign_cluster()
 #
 # x2 <- presidential_debates_2012 %>%
 #     with(data_store(dialogue)) %>%
@@ -58,11 +48,12 @@ assign_cluster.default <- function(x, ...){
 #' @method assign_cluster kmeans_cluster
 assign_cluster.kmeans_cluster <- function(x, ...){
 
-#content here
+    out <- x[['cluster']]
 
-    class(out) <- c("assign_cluster", class(out))
+    class(out) <- c("assign_cluster_kmeans","assign_cluster", class(out))
 
     attributes(out)[["data_store"]] <- attributes(x)[["text_data_store"]]
+    attributes(out)[["model"]] <- x
     out
 
 }

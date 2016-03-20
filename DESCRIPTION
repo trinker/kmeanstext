@@ -6,10 +6,9 @@ Authors@R: c(person("Tyler", "Rinker", email =
 Maintainer: Tyler Rinker <tyler.rinker@gmail.com>
 Description: Optimized tools for clustering text data via kmeans
         clustering.
-Depends: R (>= 3.2.3)
-Imports: fastcluster, gofastr, graphics, hclustext, slam, stats, termco,
-        textshape, tm
-Suggests: dplyr
+Depends: hclustext, R (>= 3.2.3)
+Imports: stats, termco, textshape
+Suggests: dplyr, testthat
 Date: 2016-03-20
 License: GPL-2
 LazyData: TRUE

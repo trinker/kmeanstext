@@ -11,11 +11,12 @@
 #' @examples
 #' library(dplyr)
 #'
-# presidential_debates_2012 %>%
-#     with(data_store(dialogue)) %>%
-#     kmeans_cluster() %>%
-#     get_text() %>%
-#     head()
+#' presidential_debates_2012 %>%
+#'     with(data_store(dialogue)) %>%
+#'     kmeans_cluster(k=55) %>%
+#'     assign_cluster() %>%
+#'     get_text() %>%
+#'     lapply(head)
 get_text <- function(x, ...){
     UseMethod("get_text")
 }
@@ -37,3 +38,18 @@ get_text.default <- function(x, ...){
     hclustext::get_text(x, ...)
 }
 
+
+#' @export
+#' @rdname get_text
+#' @method get_text data_store
+get_text.data_store <- function(x, ...){
+    x[["text"]]
+}
+
+
+#' @export
+#' @rdname get_text
+#' @method get_text assign_cluster
+get_text.assign_cluster <- function(x, ...){
+    split(get_text(attributes(x)[["data_store"]][["data"]]), as.integer(x))
+}

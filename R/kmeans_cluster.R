@@ -14,37 +14,35 @@
 #' @rdname kmeans_cluster
 #' @examples
 #' library(dplyr)
-#
-# x <- with(
-#     presidential_debates_2012,
-#     data_store(dialogue, paste(person, time, sep = "_"))
-# )
-#
-# kmeans_cluster(x) %>%
-#     plot(k=4)
-#
-# kmeans_cluster(x) %>%
-#     plot(h=.7, lwd=2)
-#
-# kmeans_cluster(x) %>%
-#     assign_cluster(h=.7)
-#
-# kmeans_cluster(x, method="complete") %>%
-#     plot(k=6)
-#
-# kmeans_cluster(x) %>%
-#     assign_cluster(k=6)
-#
-# x2 <- presidential_debates_2012 %>%
-#     with(data_store(dialogue))
-#
-# myfit2 <- kmeans_cluster(x2)
-#
-# plot(myfit2)
-# plot(myfit2, 55)
-#
-# assign_cluster(myfit2, k = 55)
-kmeans_cluster <- function(x, k = approx_k(get_dtm(x)), ...){
+#'
+#' x <- with(
+#'     presidential_debates_2012,
+#'     data_store(dialogue, paste(person, time, sep = "_"))
+#' )
+#'
+#' ## K predicted
+#' kmeans_cluster(x)
+#'
+#' ## 6 topic model
+#' kmeans_cluster(x, k=6)
+#'
+#' kmeans_cluster(x, k=6) %>%
+#'     assign_cluster()
+#'
+#' kmeans_cluster(x, k=6) %>%
+#'     assign_cluster() %>%
+#'     summary()
+#'
+#' x2 <- presidential_debates_2012 %>%
+#'     with(data_store(dialogue))
+#'
+#' myfit2 <- kmeans_cluster(x2, 55)
+#'
+#' assign_cluster(myfit2)
+#'
+#' assign_cluster(myfit2) %>%
+#'     summary()
+kmeans_cluster <- function(x, k = hclustext::approx_k(get_dtm(x)), ...){
 
     UseMethod("kmeans_cluster")
 
@@ -54,17 +52,17 @@ kmeans_cluster <- function(x, k = approx_k(get_dtm(x)), ...){
 #' @export
 #' @rdname kmeans_cluster
 #' @method kmeans_cluster data_store
-kmeans_cluster.data_store <- function(x, k = approx_k(get_dtm(x)), ...){
+kmeans_cluster.data_store <- function(x, k = hclustext::approx_k(get_dtm(x)), ...){
 
 
-#     fit <- fastcluster::hclust(cosine_distance(x[["dtm"]]), method = method)
-#
-#     text_data_store <- new.env(FALSE)
-#     text_data_store[["data"]] <- x
-#
-#     class(fit) <- c("kmeans_cluster", class(fit))
-#     attributes(fit)[["text_data_store"]] <- text_data_store
-#     fit
+    fit <- stats::kmeans(x[["dtm"]], centers=k)
+
+    text_data_store <- new.env(FALSE)
+    text_data_store[["data"]] <- x
+
+    class(fit) <- c("kmeans_cluster", class(fit))
+    attributes(fit)[["text_data_store"]] <- text_data_store
+    fit
 }
 
 

@@ -13,7 +13,7 @@ get_dtm(x, ...)
 \method{get_dtm}{kmeans_cluster}(x, ...)
 }
 \arguments{
-\item{x}{A \code{\link[hclustext]{kmeans_cluster}} object.}
+\item{x}{A \code{\link[kmeanstext]{kmeans_cluster}} object.}
 
 \item{\ldots}{ignored.}
 }
@@ -22,7 +22,7 @@ Returns a \code{\link[tm]{DocumentTermMatrix}}.
 }
 \description{
 Extract the \code{\link[tm]{DocumentTermMatrix}} supplied to/produced by a
-\code{\link[hclustext]{kmeans_cluster}} object.
+\code{\link[kmeanstext]{kmeans_cluster}} object.
 }
 \examples{
 library(dplyr)

@@ -2,6 +2,8 @@
 % Please edit documentation in R/get_text.R
 \name{get_text}
 \alias{get_text}
+\alias{get_text.assign_cluster}
+\alias{get_text.data_store}
 \alias{get_text.default}
 \alias{get_text.kmeans_cluster}
 \title{Get a Text Stored in Various Objects}
@@ -11,6 +13,10 @@ get_text(x, ...)
 \method{get_text}{kmeans_cluster}(x, ...)
 
 \method{get_text}{default}(x, ...)
+
+\method{get_text}{data_store}(x, ...)
+
+\method{get_text}{assign_cluster}(x, ...)
 }
 \arguments{
 \item{x}{A \code{\link[kmeanstext]{kmeans_cluster}} object.}
@@ -27,5 +33,11 @@ Extract the text supplied to the
 \examples{
 library(dplyr)
 
+presidential_debates_2012 \%>\%
+    with(data_store(dialogue)) \%>\%
+    kmeans_cluster(k=55) \%>\%
+    assign_cluster() \%>\%
+    get_text() \%>\%
+    lapply(head)
 }
 

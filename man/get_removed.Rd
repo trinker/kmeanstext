@@ -13,7 +13,7 @@ get_removed(x, ...)
 \method{get_removed}{kmeans_cluster}(x, ...)
 }
 \arguments{
-\item{x}{A \code{\link[hclustext]{kmeans_cluster}} object.}
+\item{x}{A \code{\link[kmeanstext]{kmeans_cluster}} object.}
 
 \item{\ldots}{ignored.}
 }
@@ -22,14 +22,14 @@ Returns a vector of text strings.
 }
 \description{
 Extract the text supplied to the
-\code{\link[hclustext]{kmeans_cluster}} object.
+\code{\link[kmeanstext]{kmeans_cluster}} object.
 }
 \examples{
 library(dplyr)
 
 presidential_debates_2012 \%>\%
     with(data_store(dialogue)) \%>\%
-    kmeans_cluster() \%>\%
+    kmeans_cluster(k=5) \%>\%
     get_removed()
 }
 

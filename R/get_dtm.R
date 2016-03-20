@@ -1,9 +1,9 @@
 #' Get a \code{\link[tm]{DocumentTermMatrix}} Stored in a \code{kmeans_cluster} Object
 #'
 #' Extract the \code{\link[tm]{DocumentTermMatrix}} supplied to/produced by a
-#' \code{\link[hclustext]{kmeans_cluster}} object.
+#' \code{\link[kmeanstext]{kmeans_cluster}} object.
 #'
-#' @param x A \code{\link[hclustext]{kmeans_cluster}} object.
+#' @param x A \code{\link[kmeanstext]{kmeans_cluster}} object.
 #' @param \ldots ignored.
 #' @return Returns a \code{\link[tm]{DocumentTermMatrix}}.
 #' @export
@@ -21,6 +21,7 @@ get_dtm <- function(x, ...){
 
 #' @export
 #' @rdname get_dtm
+#' @importFrom hclustext get_dtm
 #' @method get_dtm default
 get_dtm.default <- function(x, ...){
     hclustext::get_dtm(x, ...)

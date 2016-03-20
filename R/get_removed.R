@@ -1,9 +1,9 @@
 #' Get a Text Stored in a \code{kmeans_cluster} Object
 #'
 #' Extract the text supplied to the
-#' \code{\link[hclustext]{kmeans_cluster}} object.
+#' \code{\link[kmeanstext]{kmeans_cluster}} object.
 #'
-#' @param x A \code{\link[hclustext]{kmeans_cluster}} object.
+#' @param x A \code{\link[kmeanstext]{kmeans_cluster}} object.
 #' @param \ldots ignored.
 #' @return Returns a vector of text strings.
 #' @export
@@ -13,7 +13,7 @@
 #'
 #' presidential_debates_2012 %>%
 #'     with(data_store(dialogue)) %>%
-#'     kmeans_cluster() %>%
+#'     kmeans_cluster(k=5) %>%
 #'     get_removed()
 get_removed <- function(x, ...){
     UseMethod("get_removed")

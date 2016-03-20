@@ -1,13 +1,8 @@
-#' Assign Clusters to Documents/Text Elements
+#' Cluster Assignment of Documents/Text Elements
 #'
-#' Assign clusters to documents/text elements.
+#' Cluster assignment of documents/text elements.
 #'
-#' @param x a \code{hierarchical_cluster} object.
-#' @param k The number of clusters (can supply \code{h} instead).  Defaults to
-#' use \code{approx_k} of the \code{\link[tm]{DocumentTermMatrix}} produced
-#' by \code{data_storage}.
-#' @param h The height at which to cut the dendrograms (determines number of
-#' clusters).  If this argument is supplied \code{k} is ignored.
+#' @param x a \code{kmeans_cluster} object.
 #' @param \ldots ignored.
 #' @return Returns an \code{assign_cluster} object; a named vector of cluster
 #' assignments with documents as names.  The object also contains the original
@@ -22,59 +17,48 @@
 #'     data_store(dialogue, paste(person, time, sep = "_"))
 #' )
 #'
-#' hierarchical_cluster(x) %>%
-#'     plot(h=.7, lwd=2)
-#'
-#' hierarchical_cluster(x) %>%
-#'     assign_cluster(h=.7)
-#'
-#' hierarchical_cluster(x, method="complete") %>%
-#'     plot(k=6)
-#'
-#' hierarchical_cluster(x) %>%
-#'     assign_cluster(k=6)
-#'
-#'
-#' x2 <- presidential_debates_2012 %>%
-#'     with(data_store(dialogue)) %>%
-#'     hierarchical_cluster()
-#'
-#' ca <- assign_cluster(x2, k = 55)
-#' summary(ca)
-#'
-#' ## split text into clusters
-#' get_text(ca)
-assign_cluster <- function(x, k = approx_k(get_dtm(x)), h = NULL, ...){
+# kmeans_cluster(x) %>%
+#     plot(h=.7, lwd=2)
+#
+# kmeans_cluster(x) %>%
+#     assign_cluster(h=.7)
+#
+# kmeans_cluster(x, method="complete") %>%
+#     plot(k=6)
+#
+# kmeans_cluster(x) %>%
+#     assign_cluster(k=6)
+#
+#
+# x2 <- presidential_debates_2012 %>%
+#     with(data_store(dialogue)) %>%
+#     kmeans_cluster()
+#
+# ca <- assign_cluster(x2, k = 55)
+# summary(ca)
+#
+# ## split text into clusters
+# get_text(ca)
+assign_cluster <- function(x, ...){
      UseMethod("assign_cluster")
+}
+
+#' @export
+#' @rdname assign_cluster
+#' @method assign_cluster default
+assign_cluster.default <- function(x, ...){
+
+    hclustext::assign_cluster(x=x, ...)
+
 }
 
 
 #' @export
 #' @rdname assign_cluster
-#' @method assign_cluster hierarchical_cluster
-assign_cluster.hierarchical_cluster <- function(x, k = approx_k(get_dtm(x)), h = NULL, ...){
+#' @method assign_cluster kmeans_cluster
+assign_cluster.kmeans_cluster <- function(x, ...){
 
-#     tv <- length(get_text(x))
-#     fl <- (length(x[["height"]]) + 1)
-#     ed <- length(get_removed(x))
-#     nc <- nchar(pn2(max(tv, fl+ed)))
-#
-#     if(tv != (fl + ed)) {
-#         stop(
-#             "The `x` does not match `text.var` length:\n", "\n",
-#             paste0("N text.var          :  ", pn(tv, nc)), "\n",
-#             paste0("N fit + removed     :  ", pn(fl + ed, nc)), "\n",
-#             paste0("N fit               :  ", pn(fl, nc)), "\n",
-#             paste0("N removed documents :  ", pn(ed, nc))
-#         )
-#     }
-#
-#     dassign <- rep(NA_integer_, length(get_text(x)))
-    if (!is.null(h)){
-        out <- stats::cutree(x, h=h)
-    } else {
-        out <- stats::cutree(x, k=k)
-    }
+#content here
 
     class(out) <- c("assign_cluster", class(out))
 

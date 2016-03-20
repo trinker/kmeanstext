@@ -1,0 +1,246 @@
+---
+title: "kmeanstext"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  md_document:
+    toc: true      
+---
+
+```{r, echo=FALSE}
+library(knitr)
+desc <- suppressWarnings(readLines("DESCRIPTION"))
+regex <- "(^Version:\\s+)(\\d+\\.\\d+\\.\\d+)"
+loc <- grep(regex, desc)
+ver <- gsub(regex, "\\2", desc[loc])
+verbadge <- sprintf('<a href="https://img.shields.io/badge/Version-%s-orange.svg"><img src="https://img.shields.io/badge/Version-%s-orange.svg" alt="Version"/></a></p>', ver, ver)
+````
+
+
+```{r, echo=FALSE}
+knit_hooks$set(htmlcap = function(before, options, envir) {
+  if(!before) {
+    paste('<p class="caption"><b><em>',options$htmlcap,"</em></b></p>",sep="")
+    }
+    })
+knitr::opts_knit$set(self.contained = TRUE, cache = FALSE)
+knitr::opts_chunk$set(fig.path = "inst/figure/")
+```
+
+[![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
+[![Build Status](https://travis-ci.org/trinker/kmeanstext.svg?branch=master)](https://travis-ci.org/trinker/kmeanstext)
+[![Coverage Status](https://coveralls.io/repos/trinker/kmeanstext/badge.svg?branch=master)](https://coveralls.io/r/trinker/kmeanstext?branch=master)
+`r verbadge`
+
+<img src="inst/kmeanstext_logo/r_kmeanstext.png" width="150" alt="readability Logo">
+
+**kmeanstext** is a collection of optimized tools for clustering text data via kmeans clustering.  There are many great R [clustering tools](https://cran.r-project.org/web/views/Cluster.html) to locate topics within documents.  Kmeans clustering is a popular method for topic extraction.  This package builds upon my [hclustext](https://github.com/trinker/hclustext) package to extend the hierarchical clustering framework to kmeans.  One major difference between the two techniques is that with hierchical clustering the number of topics is specified after thte model has been fitted, whereas kmeans requires the k topics to be specified before the model is fit.  Additionally, kmeans uses a random start seed, the results may vary each time a model is fit.  Additionally, Euclidian distance is typically used in a kmeans algorithm, where as any distance metric may be passed to a hierachical clustering fit.
+
+The general idea is that we turn the documents into a matrix of words.  After this we weight the terms by importance using [tf-idf](http://nlp.stanford.edu/IR-book/html/htmledition/tf-idf-weighting-1.html).  This helps the more salient words to rise to the top.  The user then selects k clusters (topics) and runs the model.  The model iteratively shuffels centers and assigns documents to the clusters based on minimal dsitance of a document to  center.  Each run uses the recalculated mean centroid of the prior clusters as a starting point for the current iteration's centroids.  Once the centroids have stabalized the model has converged at k topics.  The user then may extract the clusters from the fit, providing a grouping for documents with similar important text features.  
+
+
+# Functions
+
+The main functions, task category, & descriptions are summarized in the table below:
+
+| Function               |  Category      | Description                                                             |
+|------------------------|----------------|-------------------------------------------------------------------------|
+| `data_store`           | data structure | **kmeanstext**'s data structure (list of dtm + text)                     |
+| `kmeans_cluster`       | cluster fit    | Fits a kmeans cluster model                                       |
+| `assign_cluster`       | assignment     | Assigns cluster to document/text element                                |
+| `get_text`             | extraction     | Get text from various **kmeanstext** objects                             |
+| `get_dtm`              | extraction     | Get `tm::DocumentTermMatrix` from various **kmeanstext** objects         |
+| `get_removed`          | extraction     | Get removed text elements from various **kmeanstext** objects            |
+| `get_terms`            | extraction     | Get clustered weighted important terms from an **assign_cluster** object|
+| `get_documents`        | extraction     | Get clustered documents from an **assign_cluster** object               |
+
+
+# Installation
+
+To download the development version of **kmeanstext**:
+
+Download the [zip ball](https://github.com/trinker/kmeanstext/zipball/master) or [tar ball](https://github.com/trinker/kmeanstext/tarball/master), decompress and run `R CMD INSTALL` on it, or use the **pacman** package to install the development version:
+
+```r
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load_gh(
+    "trinker/textshape", 
+    "trinker/gofastr", 
+    "trinker/termco",    
+    "trinker/hclusttext",    
+    "trinker/kmeanstext"
+)
+```
+
+# Contact
+
+You are welcome to:    
+* submit suggestions and bug-reports at: <https://github.com/trinker/kmeanstext/issues>    
+* send a pull request on: <https://github.com/trinker/kmeanstext/>      
+* compose a friendly e-mail to: <tyler.rinker@gmail.com>     
+
+# Demonstration
+
+## Load Packages and Data
+
+```{r}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(kmeanstext, dplyr, textshape, ggplot2, tidyr)
+
+data(presidential_debates_2012)
+```
+
+
+## Data Structure
+
+The data structure for **kmeanstext** is very specific.  The `data_storage` produces a `DocumentTermMatrix` which maps to the original text.  The empty/removed documents are tracked within this data structure, making subsequent calls to cluster the original documents and produce weighted important terms more robust.  Making the `data_storage` object is the first step to analysis.
+
+We can give the `DocumentTermMatrix` rownames via the `doc.names` argument.  If these names are not unique they will be combined into a single document as seen below.  Also, if you want to do stemming, minimum character length, stopword removal or such this is when/where it's done.
+
+
+```{r}
+ds <- with(
+    presidential_debates_2012,
+    data_store(dialogue, doc.names = paste(person, time, sep = "_"))
+)
+
+ds
+```
+
+
+## Fit the Model: kmeans Cluster
+
+Next we can fit a kmeans cluster model to the `data_store` object via `kmeans_cluster`.
+
+```{r}
+myfit <- kmeans_cluster(ds)
+
+myfit
+```
+
+
+This object can be plotted with various `k` or `h` parameters specified to experiment with cutting the dendrogram.  This cut will determine the number of clusters or topics that will be generated in the next step.  The visual inspection allows for determining how to cluster the data as well as determining if a tf-idf, cosine, kmeans cluster model is a right fit for the data and task.  By default `plot` uses an approximation of `k` based on Can & Ozkarahan's (1990) formula $(m * n)/t$ where $m$ and $n$ are the dimensions of the matrix and $t$ is the length of the non-zero elements in matrix $A$.
+
+- Can, F., Ozkarahan, E. A. (1990). Concepts and effectiveness of the cover-coefficient-based clustering methodology for text databases. *ACM Transactions on Database Systems 15* (4): 483. doi:10.1145/99935.99938
+
+Interestingly, in the plots below where `k = 6` clusters, the model groups each of the candidates together at each of the debate times.
+
+
+```{r}
+plot(myfit)
+plot(myfit, k=6)
+plot(myfit, h = .75)
+```
+
+## Assigning Clusters
+
+The `assign_cluster` function allows the user to dictate the umber of clusters.  Because the model has already been fit the cluster assignment is merely selecting the branches from the dendrogram, and is thus very quick.  Unlike many clustering techniques the number of clusters is done after the model is fit, this allows for speedy cluster assignment, meaning the user can experiment with the number of clusters.
+
+
+```{r}
+ca <- assign_cluster(myfit, k = 6)
+
+ca
+```
+
+
+### Cluster Loading
+
+To check the number of documents loading on a cluster there is a `summary` method for `assign_cluster` which provides a descending data frame of clusters and counts.  Additionally, a horizontal bar plot shows the document loadings on each cluster.
+
+```{r}
+summary(ca)
+```
+
+
+### Cluster Text 
+
+The user can grab the texts from the original documents grouped by cluster using the `get_text` function.  Here I demo a 40 character substring of the document texts.
+
+```{r}
+get_text(ca) %>%
+    lapply(substring, 1, 40)
+```
+
+
+### Cluster Frequent Terms
+
+As with many topic clustering techniques, it is useful to get the to salient terms from the model.  The `get_terms` function uses the [min-max](https://en.wikipedia.org/wiki/Feature_scaling#Rescaling) scaled, [tf-idf weighted](https://en.wikipedia.org/wiki/Tf%E2%80%93idf), `DocumentTermMatrix` to extract the most frequent salient terms.  These terms can give a sense of the topic being discussed.  Notice the absence of clusters 1 & 6.  This is a result of only a single document included in each of the clusters.  The `term.cutoff` hyperparmeter sets the lower bound on the min-max scaled tf-idf to accept.  If you don't get any terms you may want to lower this or reduce `min.n`.  Likewise, these two parameters can be raised to eliminate noise.
+
+```{r}
+get_terms(ca, .075)
+```
+
+### Clusters, Terms, and Docs Plot
+
+Here I plot the clusters, terms, and documents (grouping variables) together as a combined heatmap.  This can be useful for viewing & comparing what documents are clustering together in the context of the cluster's salient terms. This example also shows how to use the cluster terms as a lookup key to extract probable salient terms for a given document.
+
+```{r, fig.width=11}
+key <- data_frame(
+    cluster = 1:6,
+    labs = get_terms(ca, .085) %>%
+        bind_list("cluster") %>%
+        select(-n) %>%
+        group_by(cluster) %>%
+        summarize(term=paste(term, collapse=", ")) %>%
+        apply(1, paste, collapse=": ") %>%
+        c("1:", ., "6:")
+)
+
+ca %>%
+    bind_vector("id", "cluster") %>%
+    separate(id, c("person", "time"), sep="_") %>%
+    tbl_df() %>%
+    left_join(key) %>%
+    mutate(n = 1) %>%
+    mutate(labs = factor(labs, levels=rev(key[["labs"]]))) %>%
+    unite("time_person", time, person, sep="\n") %>%
+    select(-cluster) %>%
+    complete(time_person, labs) %>%  
+    mutate(n = factor(ifelse(is.na(n), FALSE, TRUE))) %>%
+    ggplot(aes(time_person, labs, fill = n)) +
+        geom_tile() +
+        scale_fill_manual(values=c("grey90", "red"), guide=FALSE) +
+        labs(x=NULL, y=NULL) 
+```        
+
+
+### Cluster Documents
+
+The `get_documents` function grabs the documents associated with a particular cluster.  This is most useful in cases where the number of documents is small and they have been given names.
+
+```{r}
+get_documents(ca)
+```
+
+
+## Putting it Together
+
+I like working in a chain.  In the setup below we work within a **magrittr** pipeline to fit a model, select clusters, and examine the results.  In this example I do not condense the 2012 Presidential Debates data by speaker and time, rather leaving every sentence as a separate document.  On my machine the initial `data_store` and model fit take ~5-8 seconds to run.  Note that I do restrict the number of clusters (for texts and terms) to a random 5 clusters for the sake of space.
+
+
+```{r, fig.height = 10}
+.tic <- Sys.time()
+
+myfit2 <- presidential_debates_2012 %>%
+    with(data_store(dialogue)) %>%
+    kmeans_cluster()
+
+difftime(Sys.time(), .tic)
+
+## View Document Loadings
+ca2 <- assign_cluster(myfit2, k = 100)
+summary(ca2) %>% 
+    head(12)
+
+## Split Text into Clusters
+set.seed(3); inds <- sort(sample.int(100, 5))
+
+get_text(ca2)[inds] %>%
+    lapply(head, 10)
+
+## Get Associated Terms
+get_terms(ca2, term.cutoff = .07)[inds]
+```
+
+
+

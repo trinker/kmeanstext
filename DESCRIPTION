@@ -1,0 +1,17 @@
+Package: kmeanstext
+Title: Ptimized Kmeans Clustering for Text Data
+Version: 0.0.1
+Authors@R: c(person("Tyler", "Rinker", email =
+        "tyler.rinker@gmail.com", role = c("aut", "cre")))
+Maintainer: Tyler Rinker <tyler.rinker@gmail.com>
+Description: Optimized tools for clustering text data via kmeans
+        clustering.
+Depends: R (>= 3.2.3)
+Imports: fastcluster, gofastr, graphics, hclustext, slam, stats, termco,
+        textshape, tm
+Suggests: dplyr
+Date: 2016-03-20
+License: GPL-2
+LazyData: TRUE
+Roxygen: list(wrap = FALSE)
+RoxygenNote: 5.0.1

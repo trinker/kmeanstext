@@ -19,7 +19,7 @@ tools](https://cran.r-project.org/web/views/Cluster.html) to locate
 topics within documents. Kmeans clustering is a popular method for topic
 extraction. This package builds upon my
 [hclustext](https://github.com/trinker/hclustext) package to extend the
-hierarchical clustering framework to kmeans. One major difference
+**hclustext** package framework to kmeans. One major difference
 between the two techniques is that with hierchical clustering the number
 of topics is specified after thte model has been fitted, whereas kmeans
 requires the k topics to be specified before the model is fit.

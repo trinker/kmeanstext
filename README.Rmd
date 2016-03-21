@@ -157,7 +157,7 @@ get_text(ca) %>%
 
 ### Cluster Frequent Terms
 
-As with many topic clustering techniques, it is useful to get the to salient terms from the model.  The `get_terms` function uses the `centers` from the `kmeans` output.   Notice the absence of clusters 2 & 3.  This is a result of only a single document included in each of the clusters.  
+As with many topic clustering techniques, it is useful to get the to salient terms from the model.  The `get_terms` function uses the `centers` from the `kmeans` output.   Notice the absence of clusters 1 & 2.  This is a result of only a single document included in each of the clusters.  
 
 ```{r}
 get_terms(ca, .008)
@@ -168,7 +168,7 @@ The `min.weight` hyperparmeter sets the lower bound on the `centers` value to ac
 
 
 ```{r}
-get_terms(ca, .005)
+get_terms(ca, .002)
 ```
 
 

@@ -235,7 +235,7 @@ detailed exploration.
     ##  $ iter        : int 2
     ##  $ ifault      : int 0
     ##  - attr(*, "class")= chr [1:2] "kmeans_cluster" "kmeans"
-    ##  - attr(*, "text_data_store")=<environment: 0x0000000044d4efd0>
+    ##  - attr(*, "text_data_store")=<environment: 0x0000000048e6d838>
 
 Assigning Clusters
 ------------------
@@ -311,8 +311,8 @@ substring of the document texts.
 As with many topic clustering techniques, it is useful to get the to
 salient terms from the model. The `get_terms` function uses the
 `centers` from the `kmeans` output. Notice the absence of clusters 1 &
-2. This is a result of only a single document included in each of the
-clusters.
+2. This is a result of lower weights (more diverse term use) across
+these clusters.
 
     get_terms(ca, .008)
 
@@ -498,9 +498,9 @@ I like working in a chain. In the setup below we work within a
 **magrittr** pipeline to fit a model, select clusters, and examine the
 results. In this example I do not condense the 2012 Presidential Debates
 data by speaker and time, rather leaving every sentence as a separate
-document. On my machine the initial `data_store` and model fit take ~1
-minute to run. Note that I do restrict the number of clusters (for texts
-and terms) to a random 5 clusters for the sake of space.
+document. On my machine the initial `data_store` and model fit take ~35
+seconds to run. Note that I do restrict the number of clusters (for
+texts and terms) to a random 5 clusters for the sake of space.
 
     .tic <- Sys.time()
 
@@ -510,7 +510,7 @@ and terms) to a random 5 clusters for the sake of space.
 
     difftime(Sys.time(), .tic)
 
-    ## Time difference of 34.04461 secs
+    ## Time difference of 35.46239 secs
 
     ## View Document Loadings
     ca2 <- assign_cluster(myfit2)

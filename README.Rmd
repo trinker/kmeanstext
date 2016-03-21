@@ -26,7 +26,7 @@ knitr::opts_knit$set(self.contained = TRUE, cache = FALSE)
 knitr::opts_chunk$set(fig.path = "inst/figure/")
 ```
 
-[![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
+[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![Build Status](https://travis-ci.org/trinker/kmeanstext.svg?branch=master)](https://travis-ci.org/trinker/kmeanstext)
 [![Coverage Status](https://coveralls.io/repos/trinker/kmeanstext/badge.svg?branch=master)](https://coveralls.io/r/trinker/kmeanstext?branch=master)
 `r verbadge`
@@ -42,16 +42,16 @@ The general idea is that we turn the documents into a matrix of words.  After th
 
 The main functions, task category, & descriptions are summarized in the table below:
 
-| Function               |  Category      | Description                                                             |
-|------------------------|----------------|-------------------------------------------------------------------------|
+| Function               |  Category      | Description                                                              |
+|------------------------|----------------|--------------------------------------------------------------------------|
 | `data_store`           | data structure | **kmeanstext**'s data structure (list of dtm + text)                     |
-| `kmeans_cluster`       | cluster fit    | Fits a kmeans cluster model                                       |
-| `assign_cluster`       | assignment     | Assigns cluster to document/text element                                |
+| `kmeans_cluster`       | cluster fit    | Fits a kmeans cluster model                                              |
+| `assign_cluster`       | assignment     | Extract clusters for document/text element                               |
 | `get_text`             | extraction     | Get text from various **kmeanstext** objects                             |
 | `get_dtm`              | extraction     | Get `tm::DocumentTermMatrix` from various **kmeanstext** objects         |
 | `get_removed`          | extraction     | Get removed text elements from various **kmeanstext** objects            |
-| `get_terms`            | extraction     | Get clustered weighted important terms from an **assign_cluster** object|
-| `get_documents`        | extraction     | Get clustered documents from an **assign_cluster** object               |
+| `get_terms`            | extraction     | Get clustered weighted important terms from an **assign_cluster** object |
+| `get_documents`        | extraction     | Get clustered documents from an **assign_cluster** object                |
 
 
 # Installation
@@ -109,35 +109,28 @@ ds
 
 ## Fit the Model: kmeans Cluster
 
-Next we can fit a kmeans cluster model to the `data_store` object via `kmeans_cluster`.
+Next we can fit a kmeans cluster model to the `data_store` object via `kmeans_cluster`.  Note that, unlike **hclustext**'s `hierarchical_cluster`, we must provide the `k` (number of topics) to the model.  
 
-```{r}
-myfit <- kmeans_cluster(ds)
-
-myfit
-```
-
-
-This object can be plotted with various `k` or `h` parameters specified to experiment with cutting the dendrogram.  This cut will determine the number of clusters or topics that will be generated in the next step.  The visual inspection allows for determining how to cluster the data as well as determining if a tf-idf, cosine, kmeans cluster model is a right fit for the data and task.  By default `plot` uses an approximation of `k` based on Can & Ozkarahan's (1990) formula $(m * n)/t$ where $m$ and $n$ are the dimensions of the matrix and $t$ is the length of the non-zero elements in matrix $A$.
+By default `kmeans_cluster` uses an approximation of `k` based on Can & Ozkarahan's (1990) formula $(m * n)/t$ where $m$ and $n$ are the dimensions of the matrix and $t$ is the length of the non-zero elements in matrix $A$. [INSERT OTHER K EXPLOATION]
 
 - Can, F., Ozkarahan, E. A. (1990). Concepts and effectiveness of the cover-coefficient-based clustering methodology for text databases. *ACM Transactions on Database Systems 15* (4): 483. doi:10.1145/99935.99938
 
-Interestingly, in the plots below where `k = 6` clusters, the model groups each of the candidates together at each of the debate times.
-
 
 ```{r}
-plot(myfit)
-plot(myfit, k=6)
-plot(myfit, h = .75)
+set.seed(100)
+myfit <- kmeans_cluster(ds, k=6)
+
+str(myfit)
 ```
+
 
 ## Assigning Clusters
 
-The `assign_cluster` function allows the user to dictate the umber of clusters.  Because the model has already been fit the cluster assignment is merely selecting the branches from the dendrogram, and is thus very quick.  Unlike many clustering techniques the number of clusters is done after the model is fit, this allows for speedy cluster assignment, meaning the user can experiment with the number of clusters.
+The `assign_cluster` function allows the user to extract the clusters and the documents they are assigned to.  Unlike **hclustext**'s `assign_cluster`, the **kmeanstext** version as no `k` argument and is merely extracting the cluster assignments from the model.  
 
 
 ```{r}
-ca <- assign_cluster(myfit, k = 6)
+ca <- assign_cluster(myfit)
 
 ca
 ```
@@ -161,14 +154,22 @@ get_text(ca) %>%
     lapply(substring, 1, 40)
 ```
 
-
 ### Cluster Frequent Terms
 
-As with many topic clustering techniques, it is useful to get the to salient terms from the model.  The `get_terms` function uses the [min-max](https://en.wikipedia.org/wiki/Feature_scaling#Rescaling) scaled, [tf-idf weighted](https://en.wikipedia.org/wiki/Tf%E2%80%93idf), `DocumentTermMatrix` to extract the most frequent salient terms.  These terms can give a sense of the topic being discussed.  Notice the absence of clusters 1 & 6.  This is a result of only a single document included in each of the clusters.  The `term.cutoff` hyperparmeter sets the lower bound on the min-max scaled tf-idf to accept.  If you don't get any terms you may want to lower this or reduce `min.n`.  Likewise, these two parameters can be raised to eliminate noise.
+As with many topic clustering techniques, it is useful to get the to salient terms from the model.  The `get_terms` function uses the `centers` from the `kmeans` output.   Notice the absence of clusters 2 & 3.  This is a result of only a single document included in each of the clusters.  
 
 ```{r}
-get_terms(ca, .075)
+get_terms(ca, .008)
 ```
+
+
+The `min.weight` hyperparmeter sets the lower bound on the `centers` value to accept.  If you don't get any terms you may want to lower this.  Likewise, this parameter (and lowering `nrow`) can be raised to eliminate noise.
+
+
+```{r}
+get_terms(ca, .005)
+```
+
 
 ### Clusters, Terms, and Docs Plot
 
@@ -177,13 +178,15 @@ Here I plot the clusters, terms, and documents (grouping variables) together as 
 ```{r, fig.width=11}
 key <- data_frame(
     cluster = 1:6,
-    labs = get_terms(ca, .085) %>%
+    labs = get_terms(ca, .002) %>%
         bind_list("cluster") %>%
-        select(-n) %>%
+        select(-weight) %>%
+        group_by(cluster) %>%
+        slice(1:10) %>%
+        na.omit() %>%
         group_by(cluster) %>%
         summarize(term=paste(term, collapse=", ")) %>%
-        apply(1, paste, collapse=": ") %>%
-        c("1:", ., "6:")
+        apply(., 1, paste, collapse=": ") 
 )
 
 ca %>%
@@ -215,7 +218,7 @@ get_documents(ca)
 
 ## Putting it Together
 
-I like working in a chain.  In the setup below we work within a **magrittr** pipeline to fit a model, select clusters, and examine the results.  In this example I do not condense the 2012 Presidential Debates data by speaker and time, rather leaving every sentence as a separate document.  On my machine the initial `data_store` and model fit take ~5-8 seconds to run.  Note that I do restrict the number of clusters (for texts and terms) to a random 5 clusters for the sake of space.
+I like working in a chain.  In the setup below we work within a **magrittr** pipeline to fit a model, select clusters, and examine the results.  In this example I do not condense the 2012 Presidential Debates data by speaker and time, rather leaving every sentence as a separate document.  On my machine the initial `data_store` and model fit take ~1 minute to run.  Note that I do restrict the number of clusters (for texts and terms) to a random 5 clusters for the sake of space.
 
 
 ```{r, fig.height = 10}
@@ -223,12 +226,12 @@ I like working in a chain.  In the setup below we work within a **magrittr** pip
 
 myfit2 <- presidential_debates_2012 %>%
     with(data_store(dialogue)) %>%
-    kmeans_cluster()
+    kmeans_cluster(k=100)
 
 difftime(Sys.time(), .tic)
 
 ## View Document Loadings
-ca2 <- assign_cluster(myfit2, k = 100)
+ca2 <- assign_cluster(myfit2)
 summary(ca2) %>% 
     head(12)
 

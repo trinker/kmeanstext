@@ -235,7 +235,7 @@ detailed exploration.
     ##  $ iter        : int 2
     ##  $ ifault      : int 0
     ##  - attr(*, "class")= chr [1:2] "kmeans_cluster" "kmeans"
-    ##  - attr(*, "text_data_store")=<environment: 0x000000004ca2cb20>
+    ##  - attr(*, "text_data_store")=<environment: 0x0000000044d4efd0>
 
 Assigning Clusters
 ------------------
@@ -352,7 +352,7 @@ value to accept. If you don't get any terms you may want to lower this.
 Likewise, this parameter (and lowering `nrow`) can be raised to
 eliminate noise.
 
-    get_terms(ca, .002)
+    get_terms(ca, .002, nrow=10) 
 
     ## $`1`
     ##   term      weight
@@ -372,95 +372,17 @@ eliminate noise.
     ## 10       they 0.002006281
     ## 
     ## $`3`
-    ##            term      weight
-    ## 1       minutes 0.017257547
-    ## 2        minute 0.015156189
-    ## 3       segment 0.009093713
-    ## 4      repealed 0.009093713
-    ## 5         views 0.008673442
-    ## 6       improve 0.008673442
-    ## 7       federal 0.007832898
-    ## 8          yeah 0.006802737
-    ## 9      specific 0.006062475
-    ## 10      quality 0.006062475
-    ## 11         left 0.006062475
-    ## 12   statements 0.006062475
-    ## 13         view 0.005177264
-    ## 14         case 0.005177264
-    ## 15      elected 0.005177264
-    ## 16         care 0.004810480
-    ## 17         role 0.004810480
-    ## 18       mister 0.004702366
-    ## 19    gentlemen 0.004535158
-    ## 20         toss 0.004535158
-    ## 21      quickly 0.004535158
-    ## 22          sir 0.004535158
-    ## 23     vouchers 0.004336721
-    ## 24         wait 0.004336721
-    ## 25      briefly 0.004336721
-    ## 26     argument 0.004336721
-    ## 27      explain 0.004336721
-    ## 28  fundamental 0.004336721
-    ## 29 government's 0.004336721
-    ## 30          pod 0.004336721
-    ## 31  legislative 0.004336721
-    ## 32    functions 0.004336721
-    ## 33    paralysis 0.004336721
-    ## 34     gridlock 0.004336721
-    ## 35           re 0.004336721
-    ## 36           na 0.004336721
-    ## 37     thursday 0.004336721
-    ## 38      october 0.004336721
-    ## 39     eleventh 0.004336721
-    ## 40       centre 0.004336721
-    ## 41     danville 0.004336721
-    ## 42     kentucky 0.004336721
-    ## 43       lehrer 0.004336721
-    ## 44       health 0.003916449
-    ## 45        clear 0.003916449
-    ## 46      closing 0.003848384
-    ## 47   difference 0.003848384
-    ## 48          act 0.003451509
-    ## 49       repeal 0.003451509
-    ## 50         dodd 0.003451509
-    ## 51        frank 0.003451509
-    ## 52       public 0.003451509
-    ## 53       excuse 0.003451509
-    ## 54       voters 0.003031238
-    ## 55      answers 0.003031238
-    ## 56         coin 0.003031238
-    ## 57 specifically 0.003031238
-    ## 58    excessive 0.003031238
-    ## 59     directly 0.003031238
-    ## 60        segue 0.003031238
-    ## 61    specifics 0.003031238
-    ## 62       barely 0.003031238
-    ## 63        grade 0.003031238
-    ## 64    governing 0.003031238
-    ## 65     remember 0.003031238
-    ## 66       result 0.003031238
-    ## 67     partisan 0.003031238
-    ## 68       denver 0.003031238
-    ## 69    obamacare 0.002886288
-    ## 70       romney 0.002687066
-    ## 71    education 0.002687066
-    ## 72       choice 0.002610966
-    ## 73   affordable 0.002610966
-    ## 74       moment 0.002267579
-    ## 75      voucher 0.002267579
-    ## 76       finish 0.002267579
-    ## 77   regulation 0.002267579
-    ## 78          few 0.002267579
-    ## 79      seconds 0.002267579
-    ## 80     terrific 0.002267579
-    ## 81         poor 0.002267579
-    ## 82           oh 0.002267579
-    ## 83        total 0.002267579
-    ## 84       brings 0.002267579
-    ## 85        event 0.002267579
-    ## 86          jim 0.002267579
-    ## 87        right 0.002182812
-    ## 88      between 0.002015300
+    ##        term      weight
+    ## 1   minutes 0.017257547
+    ## 2    minute 0.015156189
+    ## 3   segment 0.009093713
+    ## 4  repealed 0.009093713
+    ## 5     views 0.008673442
+    ## 6   improve 0.008673442
+    ## 7   federal 0.007832898
+    ## 8      yeah 0.006802737
+    ## 9  specific 0.006062475
+    ## 10  quality 0.006062475
     ## 
     ## $`4`
     ##          term      weight
@@ -474,257 +396,32 @@ eliminate noise.
     ## 8        hall 0.004166139
     ## 9       short 0.004166139
     ## 10  questions 0.004155420
-    ## 11    quickly 0.004155420
-    ## 12       move 0.004000868
-    ## 13  hempstead 0.003973598
-    ## 14    tonight 0.003973598
-    ## 15     plenty 0.003973598
-    ## 16     normal 0.003973598
-    ## 17    address 0.003973598
-    ## 18    follano 0.003973598
-    ## 19  introduce 0.003973598
-    ## 20    minutes 0.003162507
-    ## 21    hofstra 0.002777426
-    ## 22 commission 0.002777426
-    ## 23 candidates 0.002777426
-    ## 24      ahead 0.002777426
-    ## 25    subject 0.002777426
-    ## 26      gotta 0.002777426
-    ## 27       here 0.002545506
-    ## 28    waiting 0.002371881
-    ## 29      quite 0.002371881
-    ## 30     please 0.002371881
-    ## 31      don't 0.002117948
-    ## 32       york 0.002077710
-    ## 33     jeremy 0.002077710
-    ## 34      price 0.002077710
-    ## 35     gallon 0.002077710
-    ## 36      weeks 0.002077710
-    ## 37      stand 0.002077710
-    ## 38       guns 0.002077710
-    ## 39     forget 0.002077710
-    ## 40       want 0.002000041
     ## 
     ## $`5`
-    ##              term      weight
-    ## 1         segment 0.014461836
-    ## 2        pakistan 0.007212314
-    ## 3        segments 0.004597824
-    ## 4          soviet 0.004597824
-    ## 5         declare 0.004597824
-    ## 6         minutes 0.003659317
-    ## 7            iran 0.003659317
-    ## 8       questions 0.003606157
-    ## 9       gentlemen 0.003606157
-    ## 10            war 0.003460208
-    ## 11          union 0.003213741
-    ## 12       response 0.003213741
-    ## 13          catch 0.003213741
-    ## 14    declaration 0.003213741
-    ## 15        perhaps 0.003213741
-    ## 16        mubarak 0.003213741
-    ## 17         mister 0.003204954
-    ## 18         romney 0.002848848
-    ## 19        debates 0.002768166
-    ## 20    afghanistan 0.002768166
-    ## 21        nuclear 0.002744487
-    ## 22          syria 0.002744487
-    ## 23         israel 0.002744487
-    ## 24           made 0.002550054
-    ## 25         agreed 0.002404105
-    ## 26          begin 0.002404105
-    ## 27            sir 0.002404105
-    ## 28           dead 0.002404105
-    ## 29         bigger 0.002404105
-    ## 30         threat 0.002404105
-    ## 31        general 0.002404105
-    ## 32        failure 0.002404105
-    ## 33           bomb 0.002404105
-    ## 34         campus 0.002298912
-    ## 35          one's 0.002298912
-    ## 36      schieffer 0.002298912
-    ## 37            cbs 0.002298912
-    ## 38         shared 0.002298912
-    ## 39          aides 0.002298912
-    ## 40            vow 0.002298912
-    ## 41        silence 0.002298912
-    ## 42       applause 0.002298912
-    ## 43         divide 0.002298912
-    ## 44      tonight's 0.002298912
-    ## 45        fiftyth 0.002298912
-    ## 46    anniversary 0.002298912
-    ## 47           cuba 0.002298912
-    ## 48       sobering 0.002298912
-    ## 49       reminder 0.002298912
-    ## 50     unexpected 0.002298912
-    ## 51       concerns 0.002298912
-    ## 52    controversy 0.002298912
-    ## 53         caused 0.002298912
-    ## 54        attempt 0.002298912
-    ## 55       thoughts 0.002298912
-    ## 56      interject 0.002298912
-    ## 57        alluded 0.002298912
-    ## 58        spilled 0.002298912
-    ## 59 demonstrations 0.002298912
-    ## 60           died 0.002298912
-    ## 61       refugees 0.002298912
-    ## 62       reassess 0.002298912
-    ## 63            fly 0.002298912
-    ## 64          zones 0.002298912
-    ## 65         waited 0.002298912
-    ## 66        regrets 0.002298912
-    ## 67          shift 0.002298912
-    ## 68        driving 0.002298912
-    ## 69          japan 0.002298912
-    ## 70          deter 0.002298912
-    ## 71       deterred 0.002298912
-    ## 72          leads 0.002298912
-    ## 73        longest 0.002298912
-    ## 74      scheduled 0.002298912
-    ## 75       withdraw 0.002298912
-    ## 76       purposes 0.002298912
-    ## 77       deadline 0.002298912
-    ## 78        arrives 0.002298912
-    ## 79        obvious 0.002298912
-    ## 80         unable 0.002298912
-    ## 81         handle 0.002298912
-    ## 82          allen 0.002298912
-    ## 83       arrested 0.002298912
-    ## 84       provides 0.002298912
-    ## 85          haven 0.002298912
-    ## 86        obama's 0.002298912
-    ## 87           rise 0.002298912
-    ## 88       vigorous 0.002298912
-    ## 89         year's 0.002298912
-    ## 90         policy 0.002136636
-    ## 91          leave 0.002076125
-    ## 92           east 0.002076125
-    ## 93           each 0.002040043
+    ##         term      weight
+    ## 1    segment 0.014461836
+    ## 2   pakistan 0.007212314
+    ## 3   segments 0.004597824
+    ## 4     soviet 0.004597824
+    ## 5    declare 0.004597824
+    ## 6    minutes 0.003659317
+    ## 7       iran 0.003659317
+    ## 8  questions 0.003606157
+    ## 9  gentlemen 0.003606157
+    ## 10       war 0.003460208
     ## 
     ## $`6`
-    ##               term      weight
-    ## 1       department 0.017093970
-    ## 2              chu 0.011395980
-    ## 3           stated 0.011395980
-    ## 4                w 0.011395980
-    ## 5    misperception 0.011395980
-    ## 6         graduate 0.007965448
-    ## 7             bush 0.006861063
-    ## 8               oh 0.005958716
-    ## 9             earn 0.005958716
-    ## 10          george 0.005958716
-    ## 11      professors 0.005697990
-    ## 12       neighbors 0.005697990
-    ## 13        reassure 0.005697990
-    ## 14    sufficiently 0.005697990
-    ## 15          steven 0.005697990
-    ## 16         stating 0.005697990
-    ## 17        brackets 0.005697990
-    ## 18            loss 0.005697990
-    ## 19      concerning 0.005697990
-    ## 20      charitable 0.005697990
-    ## 21          forgot 0.005697990
-    ## 22         rectify 0.005697990
-    ## 23    inequalities 0.005697990
-    ## 24       regarding 0.005697990
-    ## 25         females 0.005697990
-    ## 26            male 0.005697990
-    ## 27    counterparts 0.005697990
-    ## 28       undecided 0.005697990
-    ## 29    disappointed 0.005697990
-    ## 30       attribute 0.005697990
-    ## 31        failings 0.005697990
-    ## 32        missteps 0.005697990
-    ## 33            fear 0.005697990
-    ## 34          return 0.005697990
-    ## 35   differentiate 0.005697990
-    ## 36    accomplished 0.005697990
-    ## 37        everyday 0.005697990
-    ## 38      productive 0.005697990
-    ## 39          global 0.005697990
-    ## 40         telecom 0.005697990
-    ## 41          supply 0.005697990
-    ## 42        minneola 0.005697990
-    ## 43       yesterday 0.005697990
-    ## 44         reading 0.005697990
-    ## 45          became 0.005697990
-    ## 46         refused 0.005697990
-    ## 47           extra 0.005697990
-    ## 48           prior 0.005697990
-    ## 49         attacks 0.005697990
-    ## 50          denied 0.005697990
-    ## 51        enhanced 0.005697990
-    ## 52    availability 0.005697990
-    ## 53            toll 0.005697990
-    ## 54        examples 0.005697990
-    ## 55          debunk 0.005697990
-    ## 56      deductions 0.005056368
-    ## 57        lorraine 0.004534916
-    ## 58           kerry 0.004534916
-    ## 59          living 0.004534916
-    ## 60           voter 0.003982724
-    ## 61         revenue 0.003982724
-    ## 62           aware 0.003982724
-    ## 63           ladka 0.003982724
-    ## 64    specifically 0.003982724
-    ## 65        specific 0.003982724
-    ## 66        remember 0.003982724
-    ## 67           using 0.003982724
-    ## 68             win 0.003982724
-    ## 69         planned 0.003982724
-    ## 70       workplace 0.003982724
-    ## 71       eliminate 0.003982724
-    ## 72     outsourcing 0.003982724
-    ## 73            lack 0.003982724
-    ## 74       criminals 0.003982724
-    ## 75         embassy 0.003982724
-    ## 76           brain 0.003982724
-    ## 77         however 0.003982724
-    ## 78       expensive 0.003982724
-    ## 79           cards 0.003982724
-    ## 80         society 0.003982724
-    ## 81           trust 0.003982724
-    ## 82      convention 0.003982724
-    ## 83        straight 0.003982724
-    ## 84          romney 0.003530519
-    ## 85          mister 0.003530519
-    ## 86          credit 0.003430532
-    ## 87         biggest 0.003430532
-    ## 88          twelve 0.003430532
-    ## 89      optimistic 0.002979358
-    ## 90         sitting 0.002979358
-    ## 91         assault 0.002979358
-    ## 92              ak 0.002979358
-    ## 93          sevens 0.002979358
-    ## 94           limit 0.002979358
-    ## 95      democratic 0.002979358
-    ## 96          intend 0.002979358
-    ## 97      employment 0.002979358
-    ## 98     importantly 0.002979358
-    ## 99         credits 0.002979358
-    ## 100      currently 0.002979358
-    ## 101     immigrants 0.002979358
-    ## 102             hi 0.002979358
-    ## 103        friends 0.002979358
-    ## 104  international 0.002979358
-    ## 105        seventy 0.002979358
-    ## 106          voted 0.002979358
-    ## 107        reports 0.002979358
-    ## 108         others 0.002979358
-    ## 109        various 0.002979358
-    ## 110       mortgage 0.002979358
-    ## 111       children 0.002979358
-    ## 112       thousand 0.002760961
-    ## 113            tax 0.002647889
-    ## 114 administration 0.002528184
-    ## 115          libya 0.002528184
-    ## 116        elected 0.002267458
-    ## 117            old 0.002267458
-    ## 118       problems 0.002267458
-    ## 119            man 0.002267458
-    ## 120       yourself 0.002267458
-    ## 121          child 0.002267458
-    ## 122        members 0.002267458
+    ##             term      weight
+    ## 1     department 0.017093970
+    ## 2            chu 0.011395980
+    ## 3         stated 0.011395980
+    ## 4              w 0.011395980
+    ## 5  misperception 0.011395980
+    ## 6       graduate 0.007965448
+    ## 7           bush 0.006861063
+    ## 8             oh 0.005958716
+    ## 9           earn 0.005958716
+    ## 10        george 0.005958716
 
 ### Clusters, Terms, and Docs Plot
 
@@ -813,7 +510,7 @@ and terms) to a random 5 clusters for the sake of space.
 
     difftime(Sys.time(), .tic)
 
-    ## Time difference of 33.77592 secs
+    ## Time difference of 34.04461 secs
 
     ## View Document Loadings
     ca2 <- assign_cluster(myfit2)

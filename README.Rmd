@@ -168,7 +168,7 @@ The `min.weight` hyperparmeter sets the lower bound on the `centers` value to ac
 
 
 ```{r}
-get_terms(ca, .002)
+get_terms(ca, .002, nrow=10) 
 ```
 
 

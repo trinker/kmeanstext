@@ -120,7 +120,7 @@ By default `kmeans_cluster` uses an approximation of `k` based on Can & Ozkaraha
 set.seed(100)
 myfit <- kmeans_cluster(ds, k=6)
 
-str(myfit)
+names(myfit)
 ```
 
 

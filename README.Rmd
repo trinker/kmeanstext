@@ -111,16 +111,17 @@ ds
 
 Next we can fit a kmeans cluster model to the `data_store` object via `kmeans_cluster`.  Note that, unlike **hclustext**'s `hierarchical_cluster`, we must provide the `k` (number of topics) to the model.  
 
-By default `kmeans_cluster` uses an approximation of `k` based on Can & Ozkarahan's (1990) formula $(m * n)/t$ where $m$ and $n$ are the dimensions of the matrix and $t$ is the length of the non-zero elements in matrix $A$. [INSERT OTHER K EXPLOATION]
+By default `kmeans_cluster` uses an approximation of `k` based on Can & Ozkarahan's (1990) formula $(m * n)/t$ where $m$ and $n$ are the dimensions of the matrix and $t$ is the length of the non-zero elements in matrix $A$. 
 
 - Can, F., Ozkarahan, E. A. (1990). Concepts and effectiveness of the cover-coefficient-based clustering methodology for text databases. *ACM Transactions on Database Systems 15* (4): 483. doi:10.1145/99935.99938
 
+There are other means of determining `k` as well.  See Ben Marwic's [StackOverflow post](http://stackoverflow.com/a/15376462/1000343) for a detailed exploration.
 
 ```{r}
 set.seed(100)
 myfit <- kmeans_cluster(ds, k=6)
 
-names(myfit)
+str(myfit)
 ```
 
 

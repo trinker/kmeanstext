@@ -204,23 +204,38 @@ the model.
 By default `kmeans_cluster` uses an approximation of `k` based on Can &
 Ozkarahan's (1990) formula (*m* \* *n*)/*t* where *m* and *n* are the
 dimensions of the matrix and *t* is the length of the non-zero elements
-in matrix *A*. \[INSERT OTHER K EXPLOATION\]
+in matrix *A*.
 
 -   Can, F., Ozkarahan, E. A. (1990). Concepts and effectiveness of the
     cover-coefficient-based clustering methodology for text databases.
     *ACM Transactions on Database Systems 15* (4): 483.
     <doi:10.1145/99935.99938>
 
-
+There are other means of determining `k` as well. See Ben Marwic's
+[StackOverflow post](http://stackoverflow.com/a/15376462/1000343) for a
+detailed exploration.
 
     set.seed(100)
     myfit <- kmeans_cluster(ds, k=6)
 
-    names(myfit)
+    str(myfit)
 
-    ## [1] "cluster"      "centers"      "totss"        "withinss"    
-    ## [5] "tot.withinss" "betweenss"    "size"         "iter"        
-    ## [9] "ifault"
+    ## List of 9
+    ##  $ cluster     : Named int [1:10] 4 3 2 1 1 6 2 1 1 5
+    ##   ..- attr(*, "names")= chr [1:10] "CROWLEY_time 2" "LEHRER_time 1" "OBAMA_time 1" "OBAMA_time 2" ...
+    ##  $ centers     : num [1:6, 1:3369] 0 0 0 0 0 ...
+    ##   ..- attr(*, "dimnames")=List of 2
+    ##   .. ..$ : chr [1:6] "1" "2" "3" "4" ...
+    ##   .. ..$ : chr [1:3369] "good" "evening" "from" "hofstra" ...
+    ##  $ totss       : num 0.00897
+    ##  $ withinss    : num [1:6] 0.00097 0.000458 0 0 0 ...
+    ##  $ tot.withinss: num 0.00143
+    ##  $ betweenss   : num 0.00754
+    ##  $ size        : int [1:6] 4 2 1 1 1 1
+    ##  $ iter        : int 2
+    ##  $ ifault      : int 0
+    ##  - attr(*, "class")= chr [1:2] "kmeans_cluster" "kmeans"
+    ##  - attr(*, "text_data_store")=<environment: 0x0000000047e6caa0>
 
 Assigning Clusters
 ------------------
@@ -523,7 +538,7 @@ and terms) to a random 5 clusters for the sake of space.
 
     difftime(Sys.time(), .tic)
 
-    ## Time difference of 37.25617 secs
+    ## Time difference of 36.05945 secs
 
     ## View Document Loadings
     ca2 <- assign_cluster(myfit2)
